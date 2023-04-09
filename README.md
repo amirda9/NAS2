@@ -17,24 +17,26 @@ This repository uses the following datasets:
 
 ## Model Architecture
 
-For my deep learning model, I use a Convolutional Neural Network (CNN) with the following architecture:
+How to run:
 
-- Embedding layer (input)
-- Convolutional layer with 32 filters, kernel size 3, and ReLU activation
-- Max pooling layer with pool size 2
-- Convolutional layer with 64 filters, kernel size 3, and ReLU activation
-- Max pooling layer with pool size 2
-- Flatten layer
-- Dense layer with 64 units and ReLU activation
-- Dropout layer with rate 0.5
-- Output layer with 1 unit and sigmoid activation
+1. Clone the repository
+2. Install the requirements
+3. Run the following command to train the GAN on CIFAR10 dataset:
 
-I compile the model with binary cross-entropy loss and Adam optimizer, and monitor its performance using accuracy and AUC metrics.
+```bash
+python3 search.py --mode search --data cifar10 
+```
 
-## Results
+4. Run the following command to train the GAN on STL10 dataset:
 
-After training the model on the training set for 10 epochs, I achieve an accuracy of 0.87 and an AUC of 0.93 on the testing set. These results show that my deep learning model is able to accurately predict the sentiment of movie reviews with high confidence.
+```bash
+python3 search.py --mode search --data stl10 
+```
 
-## Conclusion
+5. Run the following command to train the GAN on Imagenette dataset:
 
-In conclusion, my Deep Learning Course Project demonstrates the use of a Convolutional Neural Network for sentiment analysis of movie reviews. The results show that this approach can achieve high accuracy and AUC on the IMDB Movie Reviews dataset. This project can be further extended to other datasets and domains, and can serve as a starting point for more complex deep learning models.
+```bash
+python3 search.py --mode search --data imagenette 
+```
+
+
