@@ -38,9 +38,9 @@ if not os.path.isfile('imagenette2-320.tgz'):
     # !tar -xvf imagenette2-320.tgz
 
 
-
+if 'search' in args.exp_name
 class ImagenetteDataset(object):
-    def __init__(self, patch_size=320, validation=False, should_normalize=True):
+    def __init__(self, patch_size=32, validation=False, should_normalize=True):
         self.folder = Path('imagenette2-320/train') if not validation else Path('imagenette2-320/val')
         self.classes = ['n01440764', 'n02102040', 'n02979186', 'n03000684', 'n03028079',
                         'n03394916', 'n03417042', 'n03425413', 'n03445777', 'n03888257']
@@ -86,12 +86,6 @@ def weights_init(m):
         if classname.find('Conv2d') != -1:
             if args.init_type == 'normal':
                 nn.init.normal_(m.weight.data, 0.0, 0.02)
-            elif args.init_type == 'orth':
-                nn.init.orthogonal_(m.weight.data)
-            elif args.init_type == 'xavier_uniform':
-                nn.init.xavier_uniform(m.weight.data, 1.)
-            else:
-                raise NotImplementedError('{} unknown inital type'.format(args.init_type))
         elif classname.find('BatchNorm2d') != -1:
             nn.init.normal_(m.weight.data, 1.0, 0.02)
             nn.init.constant_(m.bias.data, 0.0)
@@ -99,7 +93,7 @@ def weights_init(m):
 def main():
     torch.cuda.empty_cache()
     torch.cuda.manual_seed(5321)
-    os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu_ids
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
     # os.environ['PYTORCH_CUDA_ALLOC_CONF'] = 'max_split_size: 1000000000'
 
     _init_inception()
@@ -112,12 +106,8 @@ def main():
 
 
     basemodel_gen = myarch.Generator(args=args)
-    
-    # gen_net = torch.nn.DataParallel(basemodel_gen, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
-    # print(gen_net)
     basemodel_dis = myarch.Discriminator(args=args)
-    # dis_net = torch.nn.DataParallel(basemodel_dis, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
-    # print(dis_net)
+
 
 
     architect_gen = Architect_gen(gen_net, args)
@@ -170,33 +160,10 @@ def main():
     start_epoch = 0
 
 
-    
-     # set writer
-    if args.checkpoint:
-        # resuming
-        print(f'=> resuming from {args.checkpoint}')
-        assert os.path.exists(os.path.join('exps', args.checkpoint))
-        checkpoint_file = os.path.join('exps', args.checkpoint, 'Model', 'checkpoint_best.pth')
-        assert os.path.exists(checkpoint_file)
-        checkpoint = torch.load(checkpoint_file)
-        start_epoch = checkpoint['epoch']
-        gen_net.load_state_dict(checkpoint['gen_state_dict'])
-        dis_net.load_state_dict(checkpoint['dis_state_dict'])
-        gen_optimizer.load_state_dict(checkpoint['gen_optimizer'])
-        dis_optimizer.load_state_dict(checkpoint['dis_optimizer'])
-        avg_gen_net = deepcopy(gen_net)
-        avg_gen_net.load_state_dict(checkpoint['avg_gen_state_dict'])
-        gen_avg_param = copy_params(avg_gen_net)
-        del avg_gen_net
-
-        args.path_helper = checkpoint['path_helper']
-        logger = create_logger(args.path_helper['log_path'])
-        logger.info(f'=> loaded checkpoint {checkpoint_file} (epoch {start_epoch})')
-    else:
-        # create new log dir
-        assert args.exp_name
-        args.path_helper = set_log_dir('exps', args.exp_name)
-        logger = create_logger(args.path_helper['log_path'])
+    # create new log dir
+    assert args.exp_name
+    args.path_helper = set_log_dir('exps', args.exp_name)
+    logger = create_logger(args.path_helper['log_path'])
 
     logger.info(args)
     writer_dict = {
@@ -207,45 +174,6 @@ def main():
 
     logger.info("param size of G = %fMB", count_parameters_in_MB(gen_net))
     logger.info("param size of D = %fMB", count_parameters_in_MB(dis_net))
-
-
-
-    # # train loop
-    # for epoch in tqdm.tqdm(range(int(start_epoch), int(args.max_epoch_D)), desc='total progress'):
-    #     lr_schedulers = (gen_scheduler, dis_scheduler) if args.lr_decay else None
-    #     train(args, gen_net, dis_net, gen_optimizer, dis_optimizer,
-    #           gen_avg_param, train_loader, epoch, writer_dict, lr_schedulers)
-
-    #     if epoch % args.val_freq == 0 or epoch == int(args.max_epoch_D)-1:
-    #         backup_param = copy_params(gen_net)
-    #         load_params(gen_net, gen_avg_param)
-    #         inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
-    #         logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
-    #                     f'FID score: {fid_score} || @ epoch {epoch}.')
-    #         load_params(gen_net, backup_param)
-    #         if fid_score < best_fid:
-    #             best_fid = fid_score
-    #             is_best = True
-    #         else:
-    #             is_best = False
-    #     else:
-    #         is_best = False
-        
-    #     # save model
-    #     avg_gen_net = deepcopy(gen_net)
-    #     load_params(avg_gen_net, gen_avg_param)
-    #     save_checkpoint({
-    #         'epoch': epoch + 1,
-    #         'model': args.arch,
-    #         'gen_state_dict': gen_net.state_dict(),
-    #         'dis_state_dict': dis_net.state_dict(),
-    #         'avg_gen_state_dict': avg_gen_net.state_dict(),
-    #         'gen_optimizer': gen_optimizer.state_dict(),
-    #         'dis_optimizer': dis_optimizer.state_dict(),
-    #         'best_fid': best_fid,
-    #         'path_helper': args.path_helper
-    #     }, is_best, args.path_helper['ckpt_path'])
-    #     del avg_gen_net
 
     # search loop
     for epoch in tqdm.tqdm(range(int(start_epoch), int(args.max_epoch_D)), desc='total progress'):

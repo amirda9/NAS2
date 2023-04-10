@@ -1,5 +1,5 @@
 from torch import nn
-from archs.search_both_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
+from bulding_blocks import Cell, DisBlock, OptimizedDisBlock
 
 import torch
 import torch.nn.functional as F
