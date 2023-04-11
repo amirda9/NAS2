@@ -23,8 +23,7 @@ logger = logging.getLogger(__name__)
 
 
 def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optimizer, gen_avg_param, train_loader, epoch,
-          writer_dict, lr_schedulers, architect_gen=None, architect_dis=None):
-    writer = writer_dict['writer']
+        lr_schedulers, architect_gen=None, architect_dis=None):
     gen_step = 0
 
     # train mode
@@ -32,7 +31,6 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
     dis_net = dis_net.train()
 
     for iter_idx, (imgs, _) in enumerate(tqdm(train_loader)):
-        global_steps = writer_dict['train_global_steps']
 
         real_imgs = imgs.type(torch.cuda.FloatTensor)
         real_imgs_w = real_imgs[:imgs.shape[0] // 2]
@@ -63,7 +61,6 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
         d_loss.backward()
         dis_optimizer.step()
 
-        writer.add_scalar('d_loss', d_loss.item(), global_steps)
 
         # sample noise
         gen_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (args.gen_bs, args.latent_dim)))
@@ -92,14 +89,11 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
                 gen_scheduler, dis_scheduler = lr_schedulers
                 g_lr = gen_scheduler.step(global_steps)
                 d_lr = dis_scheduler.step(global_steps)
-                writer.add_scalar('LR/g_lr', g_lr, global_steps)
-                writer.add_scalar('LR/d_lr', d_lr, global_steps)
 
             # moving average weight
             for p, avg_p in zip(gen_net.parameters(), gen_avg_param):
                 avg_p.mul_(0.999).add_(0.001, p.data)
 
-            writer.add_scalar('g_loss', g_loss.item(), global_steps)
             gen_step += 1
 
         # verbose
@@ -108,7 +102,6 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
                 '[Epoch %d/%d] [Batch %d/%d] [D loss: %f] [G loss: %f]' %
                 (epoch, args.max_epoch_D, iter_idx % len(train_loader), len(train_loader), d_loss.item(), g_loss.item()))
 
-        writer_dict['train_global_steps'] = global_steps + 1
 
         if architect_gen:
             # deriving arch of G/D during searching
@@ -124,9 +117,7 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
                                 file_path=os.path.join(args.path_helper['graph_vis_path'], str(epoch)+'_'+str(iter_idx)+'_D'))
 
 
-def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
-    writer = writer_dict['writer']
-    global_steps = writer_dict['valid_global_steps']
+def validate(args, fixed_z, fid_stat, gen_net: nn.Module):
 
     # eval mode
     gen_net = gen_net.eval()
@@ -165,12 +156,6 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
     # del buffer
     os.system('rm -r {}'.format(fid_buffer_dir))
     
-    writer.add_image('sampled_images', img_grid, global_steps)
-    writer.add_scalar('Inception_score/mean', mean, global_steps)
-    writer.add_scalar('Inception_score/std', std, global_steps)
-    writer.add_scalar('FID_score', fid_score, global_steps)
-
-    writer_dict['valid_global_steps'] = global_steps + 1
 
     return mean, std, fid_score
 

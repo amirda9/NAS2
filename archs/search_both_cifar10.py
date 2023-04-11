@@ -1,5 +1,5 @@
 from torch import nn
-from bulding_blocks import Cell, DisBlock, OptimizedDisBlock
+from archs.search_both_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
 
 import torch
 import torch.nn.functional as F
@@ -39,22 +39,13 @@ class Generator(nn.Module):
     def arch_parameters(self):
         return self._arch_parameters
 
-    def set_tau(self, tau):
-        self.tau = tau
-
     def forward(self, z):
         h = self.l1(z[:, :40]).view(-1, self.ch, self.bottom_width, self.bottom_width)
         n1 = self.l2(z[:, 40:80]).view(-1, self.ch, self.bottom_width * 2, self.bottom_width * 2)
         n2 = self.l3(z[:, 80:]).view(-1, self.ch, self.bottom_width * 4, self.bottom_width * 4)
 
-        if self.args.gumbel_softmax:
-            alphas_normal_pi = F.softmax(self.alphas_normal, dim=-1)
-            weights_normal = F.gumbel_softmax(alphas_normal_pi, tau=self.tau, hard=False, dim=-1)
-            alphas_up_pi = F.softmax(self.alphas_up, dim=-1)
-            weights_up = F.gumbel_softmax(alphas_up_pi, tau=self.tau, hard=False, dim=-1)
-        else:
-            weights_normal = F.softmax(self.alphas_normal, dim=-1)
-            weights_up = F.softmax(self.alphas_up, dim=-1)
+        weights_normal = F.softmax(self.alphas_normal, dim=-1)
+        weights_up = F.softmax(self.alphas_up, dim=-1)
 
         h1_skip_out, h1 = self.cell1(h, weights_normal[0], weights_up[0])
         h2_skip_out, h2 = self.cell2(h1 + n1, weights_normal[1], weights_up[1], (h1_skip_out,))
@@ -92,9 +83,6 @@ class Discriminator(nn.Module):
 
     def arch_parameters(self):
         return self._arch_parameters
-
-    def set_tau(self, tau):
-        self.tau = tau
 
     def forward(self, x):
         h = x
