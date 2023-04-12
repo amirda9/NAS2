@@ -9,18 +9,17 @@ import torch
 import data
 import tqdm
 from copy import deepcopy
-import archs
-import archs.search_both_cifar10 as myarch
-from utils.inception_score import _init_inception
-from utils.fid_score import create_inception_graph, check_or_download_inception
+import cifar10
+import search_all as myarch
+from inception_score import _init_inception
+from fid_score import create_inception_graph, check_or_download_inception
 
 from pathlib import Path
 import torchvision
 from PIL import Image
 
 from network import train, validate, LinearLrDecay, load_params, copy_params
-from utils.utils import set_log_dir, save_checkpoint, create_logger, count_parameters_in_MB
-from utils.genotype import alpha2genotype, beta2genotype, draw_graph_G, draw_graph_D
+from genotype import alpha2genotype, beta2genotype, draw_graph_G, draw_graph_D
 import data
 from architect import Architect_dis, Architect_gen
 
@@ -108,8 +107,6 @@ def main():
     start_epoch = 0
 
 
-    # create new log dir
-    args.path_helper = set_log_dir('exps', args.exp_name)
 
     # search loop
     for epoch in tqdm.tqdm(range(int(start_epoch), int(args.max_epoch_D)), desc='total progress'):
@@ -123,25 +120,12 @@ def main():
         # save and visualise current searched arch
         if epoch == 0 or epoch % args.derive_freq == 0 or epoch == int(args.max_epoch_D) - 1:
             genotype_G = alpha2genotype(gen_net.alphas_normal, gen_net.alphas_up, save=True,
-                                        file_path=os.path.join(args.path_helper['genotypes_path'], str(epoch) + '_G.npy'))
+                                        file_path=os.path.join('./exps/', str(epoch) + '_G.npy'))
             genotype_D = beta2genotype(dis_net.alphas_normal, dis_net.alphas_down, save=True,
-                                       file_path=os.path.join(args.path_helper['genotypes_path'], str(epoch) + '_D.npy'))
-            draw_graph_G(genotype_G, save=True, file_path=os.path.join(args.path_helper['graph_vis_path'], str(epoch) + '_G'))
-            draw_graph_D(genotype_D, save=True, file_path=os.path.join(args.path_helper['graph_vis_path'], str(epoch) + '_D'))
+                                       file_path=os.path.join('./exps/', str(epoch) + '_D.npy'))
+            draw_graph_G(genotype_G, save=True, file_path=os.path.join('./exps/', str(epoch) + '_G'))
+            draw_graph_D(genotype_D, save=True, file_path=os.path.join('./exps/', str(epoch) + '_D'))
 
-            avg_gen_net = deepcopy(gen_net)
-            load_params(avg_gen_net, gen_avg_param)
-            save_checkpoint({
-                'epoch': epoch + 1,
-                'model': args.arch,
-                'gen_state_dict': gen_net.state_dict(),
-                'dis_state_dict': dis_net.state_dict(),
-                'avg_gen_state_dict': avg_gen_net.state_dict(),
-                'gen_optimizer': gen_optimizer.state_dict(),
-                'dis_optimizer': dis_optimizer.state_dict(),
-                'path_helper': args.path_helper
-            }, False, args.path_helper['ckpt_path'])
-            del avg_gen_net
 
         # validate current searched arch
         if epoch == 0 or epoch % args.val_freq == 0 or epoch == int(args.max_epoch_D) - 1:
@@ -149,8 +133,7 @@ def main():
             load_params(gen_net, gen_avg_param)
 
             inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net)
-            logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
-                        f'FID score: {fid_score} || @ epoch {epoch}.')
+            print(f'epoch: {epoch}, inception_score: {inception_score}, std: {std}, fid_score: {fid_score}')
             pass
 
 if __name__ == '__main__':
