@@ -1,7 +1,7 @@
 # Deep Learning Course Project
 ## Adversarial NAS
 
-Welcome to my Deep Learning Course Project! In this project, I explore the application of deep learning techniques to solve a specific problem in my domain of interest.
+Welcome to my Deep Learning Course Project! In this project, I try to reproduce the AdversarialNAS to find the the super GAN for cifar10 and stl10 datasets. And I also I try to find the super GAN for imagenette dataset to see if it works well or not.
 
 ## Problem Statement
 
