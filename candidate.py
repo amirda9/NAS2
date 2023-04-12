@@ -36,7 +36,7 @@ PRIMITIVES_down = [
 ]
 
 
-def alpha2genotype(alpha_normal, alpha_up, save=False, file_path=None):
+def candidate_G(alpha_normal, alpha_up, save=False, file_path=None):
     num_cell = alpha_up.shape[0]
     offset = alpha_up.shape[1]
 
@@ -63,13 +63,12 @@ def alpha2genotype(alpha_normal, alpha_up, save=False, file_path=None):
             edge_j = np.argmin([100, 100, alpha_normal[cell_i][2][0], alpha_normal[cell_i][3][0], alpha_normal[cell_i][4][0]])
             genotype[cell_i][offset+edge_j] = np.argmax(np.delete(alpha_normal[cell_i][edge_j], 0)) + 1
 
-    if save:
-        np.save(file_path, genotype)
+    np.save(file_path, genotype)
 
     return genotype
 
 
-def beta2genotype(beta_normal, beta_down, save=False, file_path=None):
+def candidate_D(beta_normal, beta_down, save=False, file_path=None):
     num_cell = beta_normal.shape[0]
     offset = beta_normal.shape[1]
 
@@ -103,8 +102,7 @@ def beta2genotype(beta_normal, beta_down, save=False, file_path=None):
         if (genotype[cell_i][3] + genotype[cell_i][4] > 0) and (genotype[cell_i][0] == 0):
             genotype[cell_i][0] = np.argmax(np.delete(beta_normal[cell_i][0], 0)) + 1
 
-    if save:
-        np.save(file_path, genotype)
+    np.save(file_path, genotype)
 
     return genotype
 

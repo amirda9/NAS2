@@ -28,14 +28,14 @@ class ImageDataset(object):
 
         if args.dataset.lower() == 'stl10':
             self.train = torch.utils.data.DataLoader(
-                Dt(root=args.data_path, split='train+unlabeled', transform=transform, download=True),
+                Dt(root='./data', split='train+unlabeled', transform=transform, download=True),
                 batch_size=args.dis_bs, shuffle=True,
-                num_workers=args.num_workers, pin_memory=True)
+                num_workers=2, pin_memory=True)
 
             self.valid = torch.utils.data.DataLoader(
-                Dt(root=args.data_path, split='test', transform=transform),
+                Dt(root='./data', split='test', transform=transform),
                 batch_size=args.dis_bs, shuffle=False,
-                num_workers=args.num_workers, pin_memory=True)
+                num_workers=2, pin_memory=True)
 
             self.test = self.valid
         else:

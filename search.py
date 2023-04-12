@@ -19,7 +19,7 @@ import torchvision
 from PIL import Image
 
 from network import train, validate, LinearLrDecay, load_params, copy_params
-from genotype import alpha2genotype, beta2genotype, draw_graph_G, draw_graph_D
+from candidate import candidate_G, candidate_G, draw_graph_G, draw_graph_D
 import data
 from architect import Architect_dis, Architect_gen
 
@@ -119,9 +119,9 @@ def main():
 
         # save and visualise current searched arch
         if epoch == 0 or epoch % args.derive_freq == 0 or epoch == int(args.max_epoch_D) - 1:
-            genotype_G = alpha2genotype(gen_net.alphas_normal, gen_net.alphas_up, save=True,
+            genotype_G = candidate_G(gen_net.alphas_normal, gen_net.alphas_up, save=True,
                                         file_path=os.path.join('./exps/', str(epoch) + '_G.npy'))
-            genotype_D = beta2genotype(dis_net.alphas_normal, dis_net.alphas_down, save=True,
+            genotype_D = candidate_G(dis_net.alphas_normal, dis_net.alphas_down, save=True,
                                        file_path=os.path.join('./exps/', str(epoch) + '_D.npy'))
             draw_graph_G(genotype_G, save=True, file_path=os.path.join('./exps/', str(epoch) + '_G'))
             draw_graph_D(genotype_D, save=True, file_path=os.path.join('./exps/', str(epoch) + '_D'))

@@ -11,7 +11,7 @@ import logging
 
 from inception_score import get_inception_score
 from fid_score import calculate_fid_given_paths
-from genotype import alpha2genotype, beta2genotype, draw_graph_D, draw_graph_G
+from candidate import candidate_G, candidate_D, draw_graph_D, draw_graph_G
 
 
 def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optimizer, gen_avg_param, train_loader, epoch,
@@ -92,9 +92,9 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
         if architect_gen:
             # deriving arch of G/D during searching
             if iter_idx % 100 == 0:
-                genotype_G = alpha2genotype(gen_net.alphas_normal, gen_net.alphas_up, save=True,
+                genotype_G = candidate_Gotype(gen_net.alphas_normal, gen_net.alphas_up, save=True,
                                             file_path=os.path.join(args.path_helper['genotypes_path'], str(epoch)+'_'+str(iter_idx)+'_G.npy'))
-                genotype_D = beta2genotype(dis_net.alphas_normal, dis_net.alphas_down, save=True,
+                genotype_D = candidate_G(dis_net.alphas_normal, dis_net.alphas_down, save=True,
                                         file_path=os.path.join(args.path_helper['genotypes_path'], str(epoch)+'_'+str(iter_idx)+'_D.npy'))
             
                 draw_graph_G(genotype_G, save=True,
