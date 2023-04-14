@@ -25,6 +25,7 @@ torch.backends.cudnn.benchmark = True
 
 
 def main():
+    torch.cuda.empty_cache()
     args = cfg.parse_args()
     torch.cuda.manual_seed(5431)
     os.environ['CUDA_VISIBLE_DEVICES'] = '0'
@@ -43,11 +44,11 @@ def main():
 
     # import network from genotype
     basemodel_gen = eval('archs.' + args.arch + '.Generator')(args, genotype_G)
-    gen_net = basemodel_gen
+    gen_net = basemodel_gen.cuda()
     # gen_net = basemodel_gen.cuda()
     basemodel_dis = eval('archs.' + args.arch + '.Discriminator')(args)
     # dis_net = basemodel_dis.cuda()
-    dis_net = basemodel_dis
+    dis_net = basemodel_dis.cuda()
 
 
     # weight init
