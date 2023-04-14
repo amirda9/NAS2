@@ -14,7 +14,9 @@ import archs.search_both_cifar10 as myarch
 from utils.inception_score import _init_inception
 from utils.fid_score import create_inception_graph, check_or_download_inception
 
-
+from pathlib import Path
+import torchvision
+from PIL import Image
 
 from network import train, validate, LinearLrDecay, load_params, copy_params
 from utils.utils import set_log_dir, save_checkpoint, create_logger, count_parameters_in_MB
@@ -66,7 +68,7 @@ class ImagenetteDataset(object):
         else: image = self.center_resize(image)
             
         image = torchvision.transforms.functional.to_tensor(image)
-        if image.shape[0] == 1: image = image.expand(3, 320, 320)
+        if image.shape[0] == 1: image = image.expand(3, 32, 32)
         if self.should_normalize: image = self.normalize(image)
         
         return image, label
@@ -144,8 +146,8 @@ def main():
                                      args.d_lr, (args.beta1, args.beta2))
 
     # set up data_loader
-    dataset = ImagenetteDataset(patch_size=args.patch_size, validation=False, should_normalize=True)
-    train_loader = dataset.get_loader(batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
+    dataset = ImagenetteDataset(patch_size=32, validation=False, should_normalize=True)
+    train_loader = dataset.get_loader(batch_size=20, shuffle=True, num_workers=args.num_workers)
 
     # epoch number for dis_net
     args.max_epoch_D = args.max_epoch_G * args.n_critic

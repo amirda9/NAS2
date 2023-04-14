@@ -14,7 +14,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, help='visible GPU ids')
     parser.add_argument('--random_seed', type=int, default=12345)
-    parser.add_argument('--gf_dim', type=int, default=32, help='base channel-dim of G')
+    parser.add_argument('--gf_dim', type=int, default=48, help='base channel-dim of G')
     parser.add_argument('--bottom_width', type=int, default=4, help='init resolution, 4 for cifar10, 6 for stl10')
     parser.add_argument('--dataset', type=str, default='cifar10', help='dataset type')
     parser.add_argument('--latent_dim', type=int, default=128, help='dimensionality of the latent space')
@@ -47,7 +47,7 @@ def parse_args():
     parser.add_argument('--arch', type=str, default='arch_cifar10', help='architecture name')
     parser.add_argument('--draw_arch', type=str2bool, default=True, help='visualize the searched architecture or not')
     parser.add_argument('--num_eval_imgs', type=int, default=10000)
-    parser.add_argument('--eval_batch_size', type=int, default=20)
+    parser.add_argument('--eval_batch_size', type=int, default=200)
     parser.add_argument('--amending_coefficient', type=float, default=0, help='coeff of Amended Gradient Estimation trick')
 
     parser.add_argument('--derive_per_epoch', type=int, default=1, help='number of deriving per epoch')

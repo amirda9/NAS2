@@ -3,3 +3,9 @@
 *.tgz
 *.tar
 *.pyc
+/exps/*
+/imagenette2-320/*
+*.npz
+/tmp/*
+./__pycache__/*
+/utils/__pycache__/*
