@@ -14,13 +14,13 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, help='visible GPU ids')
     parser.add_argument('--random_seed', type=int, default=12345)
-    parser.add_argument('--gf_dim', type=int, default=15, help='base channel-dim of G')
+    parser.add_argument('--gf_dim', type=int, default=256, help='base channel-dim of G')
     parser.add_argument('--bottom_width', type=int, default=4, help='init resolution, 4 for cifar10, 6 for stl10')
     parser.add_argument('--dataset', type=str, default='cifar10', help='dataset type')
     parser.add_argument('--latent_dim', type=int, default=128, help='dimensionality of the latent space')
     parser.add_argument('--genotypes_exp', type=str, help='ues genotypes of the experiment')
     parser.add_argument('--genotype_name', type=str, default='latest', help='genotype name')
-    parser.add_argument('--df_dim', type=int, default=10, help='base channel-dim of D')
+    parser.add_argument('--df_dim', type=int, default=128, help='base channel-dim of D')
     parser.add_argument('--d_spectral_norm', type=str2bool, default=True,
                         help='add spectral_norm on discriminator or not')
     parser.add_argument('--init_type', type=str, default='normal',
