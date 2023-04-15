@@ -47,7 +47,7 @@ def parse_args():
     parser.add_argument('--arch', type=str, default='arch_cifar10', help='architecture name')
     parser.add_argument('--draw_arch', type=str2bool, default=True, help='visualize the searched architecture or not')
     parser.add_argument('--num_eval_imgs', type=int, default=10000)
-    parser.add_argument('--eval_batch_size', type=int, default=200)
+    parser.add_argument('--eval_batch_size', type=int, default=100)
     parser.add_argument('--amending_coefficient', type=float, default=0, help='coeff of Amended Gradient Estimation trick')
 
     parser.add_argument('--derive_per_epoch', type=int, default=1, help='number of deriving per epoch')
