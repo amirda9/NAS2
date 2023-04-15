@@ -3,7 +3,7 @@ python3 search.py \
 --dataset stl10 \
 --latent_dim 120 \
 --arch arch_cifar10 \
---exp_name arch_search_stl10
+--exp_name arch_search_stl10 \
 --bottom_width 6 \
 --img_size 48 \
 --max_epoch_G 120 \

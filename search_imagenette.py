@@ -279,12 +279,12 @@ def main():
 
         # validate current searched arch
         if epoch == 0 or epoch % args.val_freq == 0 or epoch == int(args.max_epoch_D) - 1:
-            # backup_param = copy_params(gen_net)
-            # load_params(gen_net, gen_avg_param)
+            backup_param = copy_params(gen_net)
+            load_params(gen_net, gen_avg_param)
 
-            # inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
-            # logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
-            #             f'FID score: {fid_score} || @ epoch {epoch}.')
+            inception_score, std, fid_score = validate(args, fixed_z, fid_stat, gen_net, writer_dict)
+            logger.info(f'Inception score mean: {inception_score}, Inception score std: {std}, '
+                        f'FID score: {fid_score} || @ epoch {epoch}.')
             pass
 
         avg_gen_net = deepcopy(gen_net)

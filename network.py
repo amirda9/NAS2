@@ -1,3 +1,5 @@
+
+
 # @Date    : 2019-10-22
 # @Author  : Chen Gao
 
@@ -144,6 +146,7 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module, writer_dict):
 
         # generate a batch of images
         gen_imgs = gen_net(z).mul_(127.5).add_(127.5).clamp_(0.0, 255.0).permute(0, 2, 3, 1).to('cpu', torch.uint8).numpy()
+        
         for img_idx, img in enumerate(gen_imgs):
             file_name = os.path.join(fid_buffer_dir, f'iter{iter_idx}_b{img_idx}.png')
             imsave(file_name, img)
