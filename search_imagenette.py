@@ -122,7 +122,7 @@ def main():
     gen_net = torch.nn.DataParallel(basemodel_gen, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
     # print(gen_net)
     basemodel_dis = myarch.Discriminator(args=args)
-    dis_net = torch.nn.DataParallel(basemodel_dis, device_ids=args.gpu_ids).cuda(args.gpu_ids[1])
+    dis_net = torch.nn.DataParallel(basemodel_dis, device_ids=args.gpu_ids).cuda(args.gpu_ids[0])
     # print(dis_net)
 
 
