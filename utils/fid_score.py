@@ -50,8 +50,8 @@ def _get_inception_layer(sess):
     layername = 'pool_3:0'
     pool3 = sess.graph.get_tensor_by_name(layername)
     # default graph 
-    
-    ops = pool3.graph.get_operations()
+    graph = tf.compat.v1.get_default_graph()
+    ops = graph.get_operations()
     for op_idx, op in enumerate(ops):
         for o in op.outputs:
             shape = o.get_shape()
