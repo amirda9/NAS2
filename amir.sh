@@ -8,13 +8,14 @@ python3 search.py \
 --dis_bs 20 \
 --max_epoch_G 120 \
 --n_critic 5 \
---gf_dim 256 \
---df_dim 128 \
+--gf_dim 32 \
+--df_dim 16 \
 --g_lr 0.0002 \
 --d_lr 0.0002 \
 --beta1 0.5 \
 --beta2 0.9 \
 --val_freq 5 \
---num_eval_imgs 5000 \
+--num_eval_imgs 50 \
+--eval_batch_size 10 \
 --exp_name search_cifar 
 

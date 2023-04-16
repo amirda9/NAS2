@@ -69,6 +69,8 @@ def get_inception_score(images, splits=10):
     Returns:
         Mean and standard deviation of the Inception Score across the splits.
     """
+
+    print(images[0].shape)
     assert (type(images) == list)
     assert (type(images[0]) == np.ndarray)
     assert (len(images[0].shape) == 3)

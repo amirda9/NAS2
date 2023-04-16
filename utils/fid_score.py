@@ -49,14 +49,16 @@ def _get_inception_layer(sess):
     """Prepares inception net for batched usage and returns pool_3 layer. """
     layername = 'pool_3:0'
     pool3 = sess.graph.get_tensor_by_name(layername)
-    # default graph 
-    graph = tf.compat.v1.get_default_graph()
-    ops = graph.get_operations()
+    # default graph is frozen, so we need to unfreeze it
+    ops = pool3.graph.get_operations()
+    # ops = graph.get_operations()
     for op_idx, op in enumerate(ops):
         for o in op.outputs:
             shape = o.get_shape()
             if shape._dims != []:
-                shape = [s.value for s in shape]
+                # get the values
+                shape = [s for s in shape]
+                # print(s for s in shape)
                 new_shape = []
                 for j, s in enumerate(shape):
                     if s == 1 and j == 0:
@@ -99,7 +101,7 @@ def get_activations(images, sess, batch_size=50, verbose=False):
         start = i * batch_size
         end = start + batch_size
         batch = images[start:end]
-        pred = sess.run(inception_layer, {'FID_Inception_Net/ExpandDims:0': batch})
+        pred = sess.run(inception_layer, {'ExpandDims:0': batch})
         pred_arr[start:end] = pred.reshape(batch_size, -1)
     if verbose:
         print(" done")
