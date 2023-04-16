@@ -313,7 +313,7 @@ def calculate_fid_given_paths(paths, inception_path, low_profile=False):
 
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
-    with tf.Session(config=config) as sess:
+    with tf.compat.v1.Session(config=config) as sess:
         sess.run(tf.global_variables_initializer())
         m1, s1 = _handle_path(paths[0], sess, low_profile=low_profile)
         m2, s2 = _handle_path(paths[1], sess, low_profile=low_profile)
