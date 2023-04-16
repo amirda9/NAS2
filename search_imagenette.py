@@ -75,7 +75,7 @@ def main():
     # set up data_loader
     if args.dataset.lower() == 'imagenette':
         dataset = data.ImagenetteDataset(patch_size=32, validation=False, should_normalize=True)
-        train_loader = dataset.get_loader(batch_size=20, shuffle=True, num_workers=args.num_workers)
+        train_loader = dataset.get_loader(batch_size=20, shuffle=True, num_workers=2)
     else:
         dataset = data.ImageDataset(args)
         train_loader = dataset.train
