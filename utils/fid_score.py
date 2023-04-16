@@ -47,8 +47,10 @@ def create_inception_graph(pth):
 #   https://github.com/openai/improved-gan/blob/master/inception_score/model.py
 def _get_inception_layer(sess):
     """Prepares inception net for batched usage and returns pool_3 layer. """
-    layername = 'FID_Inception_Net/pool_3:0'
+    layername = 'pool_3:0'
     pool3 = sess.graph.get_tensor_by_name(layername)
+    # default graph 
+    
     ops = pool3.graph.get_operations()
     for op_idx, op in enumerate(ops):
         for o in op.outputs:
