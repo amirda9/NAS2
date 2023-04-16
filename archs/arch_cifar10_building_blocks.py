@@ -1,10 +1,7 @@
-# @Date    : 2019-10-22
-# @Author  : Chen Gao
-
-
 from torch import nn
 import torch.nn.functional as F
 
+NORMS = ['in', 'bn']
 
 # 7
 PRIMITIVES = [
@@ -16,6 +13,7 @@ PRIMITIVES = [
   'dil_conv_3x3',
   'dil_conv_5x5'
 ]
+
 
 # 3
 PRIMITIVES_up = [

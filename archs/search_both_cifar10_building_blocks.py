@@ -1,9 +1,5 @@
-# @Date    : 2019-10-22
-# @Author  : Chen Gao
-
 from torch import nn
 import torch.nn.functional as F
-import pdb
 
 UP_MODES = ['nearest', 'bilinear']
 NORMS = ['in', 'bn']
