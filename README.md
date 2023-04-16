@@ -5,7 +5,8 @@ Welcome to my Deep Learning Course Project! In this project, I try to reproduce 
 
 ## Problem Statement
 
-My problem statement is to build a deep learning model that can predict the sentiment of movie reviews with high accuracy. To achieve this, I use a dataset of movie reviews and their corresponding sentiment labels (positive or negative).
+My problem statement is to build a superior GAN in order to generate images that are more realistic than the original images. The original images are from the CIFAR10 and STL10 datasets. The GAN is trained on the CIFAR10 and STL10 datasets. The GAN is then used to generate images that are more realistic than the original images.
+
 
 ## Dataset
 

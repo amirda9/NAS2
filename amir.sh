@@ -16,6 +16,6 @@ python3 search.py \
 --beta2 0.9 \
 --val_freq 5 \
 --num_eval_imgs 50 \
---eval_batch_size 10 \
+--conda env export --from-history>ENV.ymleval_batch_size 10 \
 --exp_name search_cifar 
 
