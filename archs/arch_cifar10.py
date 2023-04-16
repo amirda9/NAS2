@@ -1,5 +1,5 @@
 from torch import nn
-from archs.arch_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
+from archs.search_both_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
 
 
 class Generator(nn.Module):
