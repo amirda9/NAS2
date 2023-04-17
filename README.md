@@ -7,10 +7,13 @@ Welcome to my Deep Learning Course Project! In this project, I try to reproduce 
 
 My problem statement is to build a superior GAN in order to generate images that are more realistic than the original images. The original images are from the CIFAR10 and STL10 datasets. The GAN is trained on the CIFAR10 and STL10 datasets. The GAN is then used to generate images that are more realistic than the original images.
 
+## Datasets
 
-## Dataset
+This repository uses the following datasets:
 
-The dataset I use for this project is the IMDB Movie Reviews dataset, which contains 50,000 movie reviews (25,000 positive and 25,000 negative). The dataset is split into training and testing sets, with 20% of the data reserved for testing. I use the Keras API to load and preprocess the data.
+- [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html)
+- [STL-10](https://cs.stanford.edu/~acoates/stl10/)
+- [Imagenette](https://github.com/fastai/imagenette)
 
 ## Model Architecture
 

@@ -1,9 +1,10 @@
 from torch import nn
-from archs.search_both_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
+from archs.arch_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
 
 
 class Generator(nn.Module):
     def __init__(self, args, genotype):
+        print('Generator genotype: ', genotype[0])
         super(Generator, self).__init__()
         self.args = args
         self.ch = args.gf_dim

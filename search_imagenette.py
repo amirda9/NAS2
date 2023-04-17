@@ -109,13 +109,6 @@ def main():
 
     str_ids = args.gpu_ids.split(',')
     args.gpu_ids = []
-    for _id in range(len(str_ids)):
-        if _id >= 0:
-            args.gpu_ids.append(_id)
-    if len(args.gpu_ids) > 1:
-        args.gpu_ids = args.gpu_ids[1:]
-    else:
-        args.gpu_ids = args.gpu_ids
 
 
     basemodel_gen = myarch.Generator(args=args)

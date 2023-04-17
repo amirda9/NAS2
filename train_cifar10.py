@@ -1,5 +1,3 @@
-# @Date    : 2019-10-22
-# @Author  : Chen Gao
 
 from __future__ import absolute_import, division, print_function
 
@@ -41,7 +39,6 @@ def main():
     # genotype G
     genotypes_root = os.path.join('exps', args.genotypes_exp, 'Genotypes')
     genotype_G = np.load(os.path.join(genotypes_root, 'latest_G.npy'))
-
     # import network from genotype
     basemodel_gen = eval('archs.' + args.arch + '.Generator')(args, genotype_G)
     gen_net = basemodel_gen.cuda()
