@@ -1,8 +1,3 @@
-
-
-# @Date    : 2019-10-22
-# @Author  : Chen Gao
-
 import os
 import numpy as np
 import math
@@ -14,12 +9,9 @@ from tqdm import tqdm
 from copy import deepcopy
 import logging
 
-from utils.inception_score import get_inception_score
-from utils.fid_score import calculate_fid_given_paths
-from utils.genotype import alpha2genotype, beta2genotype, draw_graph_D, draw_graph_G
-
-
-logger = logging.getLogger(__name__)
+from inception_score import get_inception_score
+from fid_score import calculate_fid_given_paths
+from genotype import alpha2genotype, beta2genotype, draw_graph_D, draw_graph_G
 
 
 def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optimizer, gen_avg_param, train_loader, epoch,
@@ -44,10 +36,7 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
         if architect_dis:
             # sample noise
             search_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (imgs.shape[0] // 2, args.latent_dim)))
-            if args.amending_coefficient:
-                architect_dis.step(dis_net, real_imgs_arch, gen_net, search_z, real_imgs_train=real_imgs_w, train_z=z, eta=args.amending_coefficient)
-            else:
-                architect_dis.step(dis_net, real_imgs_arch, gen_net, search_z)
+            architect_dis.step(dis_net, real_imgs_arch, gen_net, search_z)
 
         # train weights of D
         dis_optimizer.zero_grad()
@@ -66,16 +55,13 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
         gen_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (args.gen_bs, args.latent_dim)))
         # search arch of G
         if architect_gen:
-            if global_steps % args.n_critic == 0:
+            if len(train_loader) % args.n_critic == 0:
                 # sample noise
                 search_z = torch.cuda.FloatTensor(np.random.normal(0, 1, (args.gen_bs, args.latent_dim)))
-                if args.amending_coefficient:
-                    architect_gen.step(search_z, gen_net, dis_net, train_z=gen_z, eta=args.amending_coefficient)
-                else:
-                    architect_gen.step(search_z, gen_net, dis_net)
+                architect_gen.step(search_z, gen_net, dis_net)
 
         # train weights of G
-        if global_steps % args.n_critic == 0:
+        if len(train_loader) % args.n_critic == 0:
             gen_optimizer.zero_grad()
             gen_imgs = gen_net(gen_z)
             fake_validity = dis_net(gen_imgs)
@@ -87,8 +73,8 @@ def train(args, gen_net: nn.Module, dis_net: nn.Module, gen_optimizer, dis_optim
             # learning rate
             if lr_schedulers:
                 gen_scheduler, dis_scheduler = lr_schedulers
-                g_lr = gen_scheduler.step(global_steps)
-                d_lr = dis_scheduler.step(global_steps)
+                g_lr = gen_scheduler.step(len(train_loader))
+                d_lr = dis_scheduler.step(len(train_loader))
 
             # moving average weight
             for p, avg_p in zip(gen_net.parameters(), gen_avg_param):
@@ -127,7 +113,7 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module):
     img_grid = make_grid(sample_imgs, nrow=10, normalize=True, scale_each=True)
 
     # get fid and inception score
-    fid_buffer_dir = os.path.join(args.path_helper['sample_path'], 'fid_buffer')
+    fid_buffer_dir = os.path.join('./exps', 'fid_buffer')
     os.makedirs(fid_buffer_dir, exist_ok=True)
 
     eval_iter = args.num_eval_imgs // args.eval_batch_size
@@ -144,13 +130,11 @@ def validate(args, fixed_z, fid_stat, gen_net: nn.Module):
         img_list.extend(list(gen_imgs))
 
     # get inception score
-    logger.info('=> calculate inception score')
     mean, std = get_inception_score(img_list)
 
 
 
     # get fid score
-    logger.info('=> calculate fid score')
     fid_score = calculate_fid_given_paths([fid_buffer_dir, fid_stat], inception_path=None)
     
     # del buffer

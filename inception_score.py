@@ -19,44 +19,7 @@ DATA_URL = 'http://download.tensorflow.org/models/image/imagenet/inception-2015-
 softmax = None
 
 config = tf.compat.v1.ConfigProto()
-# config.gpu_options.allow_growth = True
-
-
-# Call this function with list of images. Each of elements should be a
-# numpy array with values ranging from 0 to 255.
-# def get_inception_score(images, splits=10):
-#     assert (type(images) == list)
-#     assert (type(images[0]) == np.ndarray)
-#     assert (len(images[0].shape) == 3)
-#     assert (np.max(images[0]) > 10)
-#     assert (np.min(images[0]) >= 0.0)
-#     inps = []
-#     for img in images:
-#         img = img.astype(np.float32)
-#         inps.append(np.expand_dims(img, 0))
-#     bs = 20
-#     with tf.compat.v1.Session(config=config) as sess:
-#         preds = []
-#         n_batches = int(math.ceil(float(len(inps)) / float(bs)))
-#         for i in tqdm(range(n_batches), desc="Calculate inception score"):
-#             sys.stdout.flush()
-#             inp = inps[(i * bs):min((i + 1) * bs, len(inps))]
-#             inp = np.concatenate(inp, 0)
-#             print(inp.shape)
-#             pred = sess.run(softmax, inp)
-#             print(pred.shape)
-#             # pred = tf.compat.v1.nn.softmax(inp)
-#             preds.append(pred)
-#         preds = np.concatenate(preds, 0)
-#         scores = []
-#         for i in range(splits):
-#             part = preds[(i * preds.shape[0] // splits):((i + 1) * preds.shape[0] // splits), :]
-#             kl = part * (np.log(part) - np.log(np.expand_dims(np.mean(part, 0), 0)))
-#             kl = np.mean(np.sum(kl, 1))
-#             scores.append(np.exp(kl))
-
-#         sess.close()
-#     return np.mean(scores), np.std(scores)
+config.gpu_options.allow_growth = True
 
 def get_inception_score(images, splits=10):
     """

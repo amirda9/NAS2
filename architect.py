@@ -14,10 +14,7 @@ class Architect_gen(object):
 
     def step(self, search_z, gen_net, dis_net, train_z=None, eta=None):
         self.optimizer.zero_grad()
-        if self.args.amending_coefficient:
-            self._backward_step_amending(search_z, gen_net, dis_net, train_z, eta)
-        else:
-            self._backward_step(search_z, gen_net, dis_net)
+        self._backward_step(search_z, gen_net, dis_net)
         self.optimizer.step()
 
     def _backward_step(self, search_z, gen_net, dis_net):
@@ -103,10 +100,7 @@ class Architect_dis(object):
 
     def step(self, dis_net, real_imgs, gen_net, search_z, real_imgs_train=None, train_z=None, eta=None):
         self.optimizer.zero_grad()
-        if self.args.amending_coefficient:
-            self._backward_step_amending(dis_net, real_imgs, gen_net, search_z, real_imgs_train, train_z, eta)
-        else:
-            self._backward_step(dis_net, real_imgs, gen_net, search_z)
+        self._backward_step(dis_net, real_imgs, gen_net, search_z)
         self.optimizer.step()
 
     def _backward_step(self, dis_net, real_imgs, gen_net, search_z):

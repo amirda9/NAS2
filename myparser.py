@@ -24,10 +24,10 @@ def parse_args():
     opt.beta1 = 0.5
     opt.beta2 = 0.9
     opt.val_freq = 5
-    opt.num_eval_imgs = 500
-    opt.eval_batch_size = 50
-    opt.gf_dim = 256
-    opt.df_dim = 128
+    opt.num_eval_imgs = 50
+    opt.eval_batch_size = 10
+    opt.gf_dim = 64
+    opt.df_dim = 32
     opt.d_spectral_norm = True
     opt.g_spectral_norm = True
     opt.dis_bs = 20

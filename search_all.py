@@ -1,5 +1,5 @@
 from torch import nn
-from archs.search_both_cifar10_building_blocks import Cell, DisBlock, OptimizedDisBlock
+from search_all_blocks import Cell, DisBlock, OptimizedDisBlock
 
 import torch
 import torch.nn.functional as F
@@ -87,14 +87,8 @@ class Discriminator(nn.Module):
     def forward(self, x):
         h = x
 
-        if self.args.gumbel_softmax:
-            alphas_normal_pi = F.softmax(self.alphas_normal, dim=-1)
-            weights_normal = F.gumbel_softmax(alphas_normal_pi, tau=self.tau, hard=False, dim=-1)
-            alphas_down_pi = F.softmax(self.alphas_down, dim=-1)
-            weights_down = F.gumbel_softmax(alphas_down_pi, tau=self.tau, hard=False, dim=-1)
-        else:
-            weights_normal = F.softmax(self.alphas_normal, dim=-1)
-            weights_down = F.softmax(self.alphas_down, dim=-1)
+        weights_normal = F.softmax(self.alphas_normal, dim=-1)
+        weights_down = F.softmax(self.alphas_down, dim=-1)
 
         h = self.block1(h, weights_normal=weights_normal[0], weights_down=weights_down[0])
         h = self.block2(h, weights_normal=weights_normal[1], weights_down=weights_down[1])
