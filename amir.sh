@@ -1,6 +1,6 @@
 python3 search.py \
 --gpu_ids 0 \
---dataset cifar10 \
+--dataset stl10 \
 --genotypes_exp arch_cifar10 \
 --latent_dim 120 \
 --arch arch_cifar10 \
@@ -12,10 +12,11 @@ python3 search.py \
 --df_dim 16 \
 --g_lr 0.0002 \
 --d_lr 0.0002 \
+--img_size 48 \
 --beta1 0.5 \
 --beta2 0.9 \
 --val_freq 5 \
---num_eval_imgs 50 \
---conda env export --from-history>ENV.ymleval_batch_size 10 \
+--num_eval_imgs 200 \
+--eval_batch_size 20 \
 --exp_name search_cifar 
 

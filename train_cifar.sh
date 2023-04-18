@@ -18,4 +18,4 @@ python3 train_cifar10.py \
 --beta1 0.0 \
 --beta2 0.9 \
 --val_freq 5 \
---num_eval_imgs 50000 \
+--num_eval_imgs 500 \
